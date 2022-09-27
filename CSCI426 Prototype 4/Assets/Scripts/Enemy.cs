@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class Enemy : MonoBehaviour
     Rigidbody2D rb; 
     Transform target;
     Vector2 moveDirection;
+
+    int points = 0;
+
+    public GameOver GameOverScreen;
 
     private void Awake() 
     {
@@ -21,6 +26,7 @@ public class Enemy : MonoBehaviour
     {
         health = maxHealth;   
         target = GameObject.Find("Player").transform;
+        GameOverScreen = GameObject.FindGameObjectWithTag("GameOverTag").GetComponent<GameOver>();
     }
 
     private void Update() 
@@ -42,13 +48,27 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void UpdatePoints(int score)
+    {
+        points += score;
+    }
+
     public void TakeDamage(float damageAmount) 
     {
         health -= damageAmount;
 
         if(health <=0)
         {
+            GameOverScreen.AddScore(1);
             Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D col) 
+    {
+        if (col.gameObject.CompareTag("Player"))
+        {
+            GameOverScreen.Setup(); 
         }
     }
 }
