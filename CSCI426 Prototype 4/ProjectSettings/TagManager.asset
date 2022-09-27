@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Enemy
   - GameOverTag
+  - Pickup
+  - Slow
   layers:
   - Default
   - TransparentFX

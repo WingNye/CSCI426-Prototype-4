@@ -4,29 +4,29 @@ using UnityEngine;
 
 public class RandomSpawner : MonoBehaviour
 {
-    public GameObject ItemPrefab;
-    public float Radius = 1;
-    public int spawnLimit = 5;
-    public int spawned = 0; 
+    [SerializeField] 
+    private GameObject box;
 
-    void Update() {
-        if (spawned < spawnLimit)
-        {
-            SpawnObjectAtRandom();
-            spawned++;
-        }
-        
+    [SerializeField] 
+    private float swarmInterval = 3.5f;
+
+    [SerializeField] 
+    private GameObject biggerbox;
+
+    [SerializeField] 
+    private float bigswarmInterval = 5f;
+
+    void Start() 
+    {
+        StartCoroutine(spawnEnemy(swarmInterval, box));
+        StartCoroutine(spawnEnemy(bigswarmInterval, biggerbox));
     }
 
-    void SpawnObjectAtRandom() {
-        Vector3 randomPos = Random.insideUnitCircle * Radius;
-
-        Instantiate(ItemPrefab, randomPos, Quaternion.identity);
-    }
-
-    private void OnDrawGizmos() {
-        Gizmos.color = Color.green;
-
-        Gizmos.DrawWireSphere(this.transform.position, Radius);
+    private IEnumerator spawnEnemy(float interval, GameObject enemy)
+    {
+        yield return new WaitForSeconds(interval);
+        GameObject newEnemy = Instantiate(enemy, new Vector3(Random.Range(-9f, 9), Random.Range(-4f, 4), 0), Quaternion.identity);
+        StartCoroutine(spawnEnemy(interval, enemy));
     }
 }
+
