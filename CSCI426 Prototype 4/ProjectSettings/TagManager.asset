@@ -8,6 +8,7 @@ TagManager:
   - GameOverTag
   - Pickup
   - Slow
+  - Degrade
   layers:
   - Default
   - TransparentFX

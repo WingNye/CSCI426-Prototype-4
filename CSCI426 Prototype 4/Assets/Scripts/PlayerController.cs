@@ -16,6 +16,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float slowInterval = 10f;
 
+    [SerializeField] 
+    private GameObject degrade; 
+
+    [SerializeField]
+    private float degradeInterval = 10f;
+
     public Rigidbody2D rb;
     public Weapon weapon;
 
@@ -25,10 +31,16 @@ public class PlayerController : MonoBehaviour
 
     public Enemy enemy; 
 
+    public AudioSource slowSound;
+    public AudioSource powerupSound;
+    public AudioSource reduceHealthSound;
+    public AudioSource backgroundMusic;
+
     void Start() 
     {
         StartCoroutine(spawnPowerup(powerupInterval, speedPowerup));
         StartCoroutine(spawnPowerup(slowInterval, slowEnemies));
+        StartCoroutine(degradePowerup(degradeInterval, degrade));
     }
 
     // Update is called once per frame
@@ -61,17 +73,32 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(spawnPowerup(interval, powerup));
     }
 
+    private IEnumerator degradePowerup(float interval, GameObject powerup)
+    {
+        yield return new WaitForSeconds(interval);
+        GameObject newPowerup = Instantiate(powerup, new Vector3(Random.Range(-9f, 9), Random.Range(-4f, 4), 0), Quaternion.identity);
+        StartCoroutine(degradePowerup(interval, powerup));
+    }
+
     void OnTriggerEnter2D (Collider2D other) 
     {
         if(other.gameObject.CompareTag("Pickup"))
         {
             moveSpeed = moveSpeed * 1.25f;
             Destroy(other.gameObject);
+            powerupSound.Play();
         }
         else if (other.gameObject.CompareTag("Slow"))
         {
-            Enemy.moveSpeed = Enemy.moveSpeed - 0.5f;
+            Enemy.moveSpeed = Enemy.moveSpeed - 0.25f;
             Destroy(other.gameObject);
+            slowSound.Play();
+        }
+        else if (other.gameObject.CompareTag("Degrade"))
+        {
+            Enemy.maxHealth = 1f;
+            Destroy(other.gameObject);
+            reduceHealthSound.Play();
         }
     }
 }

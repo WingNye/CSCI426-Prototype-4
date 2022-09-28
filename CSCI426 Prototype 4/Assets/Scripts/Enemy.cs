@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] float health, maxHealth = 3f;
+    public static float health, maxHealth = 3f;
 
-    public static float moveSpeed = 3f;
+    public static float moveSpeed = 2.5f;
     
     Rigidbody2D rb; 
     Transform target;
